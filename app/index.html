@@ -10,13 +10,18 @@
     {{content-for 'head'}}
 
     <link rel="stylesheet" href="assets/vendor.css">
-    <link rel="stylesheet" href="assets/webapp.css">
+    <link rel="stylesheet" href="assets/fonts/opensanshebrew/font.css">
+    <link rel="stylesheet" href="assets/style.css">
 
     {{content-for 'head-footer'}}
   </head>
   <body>
+    <!--[if lt IE 8]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
     {{content-for 'body'}}
 
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     <script src="assets/vendor.js"></script>
     <script src="assets/webapp.js"></script>
 

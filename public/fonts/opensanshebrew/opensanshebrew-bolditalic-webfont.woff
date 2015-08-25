@@ -1,0 +1,260 @@
+#
+# This is the Apache server configuration file providing SSL support.
+# It contains the configuration directives to instruct the server how to
+# serve pages over an https connection. For detailing information about these 
+# directives see <URL:http://httpd.apache.org/docs/2.2/mod/mod_ssl.html>
+# 
+# Do NOT simply read the instructions in here without understanding
+# what they do.  They're here only as hints or reminders.  If you are unsure
+# consult the online docs. You have been warned.  
+#
+
+#
+# Pseudo Random Number Generator (PRNG):
+# Configure one or more sources to seed the PRNG of the SSL library.
+# The seed data should be of good random quality.
+# WARNING! On some platforms /dev/random blocks if not enough entropy
+# is available. This means you then cannot use the /dev/random device
+# because it would lead to very long connection times (as long as
+# it requires to make more entropy available). But usually those
+# platforms additionally provide a /dev/urandom device which doesn't
+# block. So, if available, use this one instead. Read the mod_ssl User
+# Manual for more details.
+#
+#SSLRandomSeed startup file:/dev/random  512
+#SSLRandomSeed startup file:/dev/urandom 512
+#SSLRandomSeed connect file:/dev/random  512
+#SSLRandomSeed connect file:/dev/urandom 512
+
+
+#
+# When we also provide SSL we have to listen to the 
+# standard HTTP port (see above) and to the HTTPS port
+#
+# Note: Configurations that use IPv6 but not IPv4-mapped addresses need two
+#       Listen directives: "Listen [::]:443" and "Listen 0.0.0.0:443"
+#
+Listen 443
+
+##
+##  SSL Global Context
+##
+##  All SSL configuration in this context applies both to
+##  the main server and all SSL-enabled virtual hosts.
+##
+
+#
+#   Some MIME-types for downloading Certificates and CRLs
+#
+AddType application/x-x509-ca-cert .crt
+AddType application/x-pkcs7-crl    .crl
+
+#   Pass Phrase Dialog:
+#   Configure the pass phrase gathering process.
+#   The filtering dialog program (`builtin' is a internal
+#   terminal dialog) has to provide the pass phrase on stdout.
+SSLPassPhraseDialog  builtin
+
+#   Inter-Process Session Cache:
+#   Configure the SSL Session Cache: First the mechanism 
+#   to use and second the expiring timeout (in seconds).
+#SSLSessionCache         "dbm:E:/apps/UwAmp/bin/apache/logs/ssl_scache"
+SSLSessionCache        "shmcb:E:/apps/UwAmp/bin/apache/logs/ssl_scache(512000)"
+SSLSessionCacheTimeout  300
+
+#   Semaphore:
+#   Configure the path to the mutual exclusion semaphore the
+#   SSL engine uses internally for inter-process synchronization. 
+SSLMutex default
+
+##
+## SSL Virtual Host Context
+##
+
+<VirtualHost _default_:443>
+
+#   General setup for the virtual host
+DocumentRoot "E:/apps/UwAmp/bin/apache/htdocs"
+ServerName test:443
+ServerAdmin test@toto.com
+ErrorLog "E:/apps/UwAmp/bin/apache/logs/error.log"
+TransferLog "E:/apps/UwAmp/bin/apache/logs/access.log"
+
+#   SSL Engine Switch:
+#   Enable/Disable SSL for this virtual host.
+SSLEngine on
+
+#   SSL Cipher Suite:
+#   List the ciphers that the client is permitted to negotiate.
+#   See the mod_ssl documentation for a complete list.
+SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+
+#   Server Certificate:
+#   Point SSLCertificateFile at a PEM encoded certificate.  If
+#   the certificate is encrypted, then you will be prompted for a
+#   pass phrase.  Note that a kill -HUP will prompt again.  Keep
+#   in mind that if you have both an RSA and a DSA certificate you
+#   can configure both in parallel (to also allow the use of DSA
+#   ciphers, etc.)
+SSLCertificateFile "E:/apps/UwAmp/bin/apache/conf/server.crt"
+#SSLCertificateFile "E:/apps/UwAmp/bin/apache/conf/server-dsa.crt"
+
+#   Server Private Key:
+#   If the key is not combined with the certificate, use this
+#   directive to point at the key file.  Keep in mind that if
+#   you've both a RSA and a DSA private key you can configure
+#   both in parallel (to also allow the use of DSA ciphers, etc.)
+SSLCertificateKeyFile "E:/apps/UwAmp/bin/apache/conf/server.key"
+#SSLCertificateKeyFile "E:/apps/UwAmp/bin/apache/conf/server-dsa.key"
+
+#   Server Certificate Chain:
+#   Point SSLCertificateChainFile at a file containing the
+#   concatenation of PEM encoded CA certificates which form the
+#   certificate chain for the server certificate. Alternatively
+#   the referenced file can be the same as SSLCertificateFile
+#   when the CA certificates are directly appended to the server
+#   certificate for convinience.
+#SSLCertificateChainFile "E:/apps/UwAmp/bin/apache/conf/server-ca.crt"
+
+#   Certificate Authority (CA):
+#   Set the CA certificate verification path where to find CA
+#   certificates for client authentication or alternatively one
+#   huge file containing all of them (file must be PEM encoded)
+#   Note: Inside SSLCACertificatePath you need hash symlinks
+#         to point to the certificate files. Use the provided
+#         Makefile to update the hash symlinks after changes.
+#SSLCACertificatePath "E:/apps/UwAmp/bin/apache/conf/ssl.crt"
+#SSLCACertificateFile "E:/apps/UwAmp/bin/apache/conf/ssl.crt/ca-bundle.crt"
+
+#   Certificate Revocation Lists (CRL):
+#   Set the CA revocation path where to find CA CRLs for client
+#   authentication or alternatively one huge file containing all
+#   of them (file must be PEM encoded)
+#   Note: Inside SSLCARevocationPath you need hash symlinks
+#         to point to the certificate files. Use the provided
+#         Makefile to update the hash symlinks after changes.
+#SSLCARevocationPath "E:/apps/UwAmp/bin/apache/conf/ssl.crl"
+#SSLCARevocationFile "E:/apps/UwAmp/bin/apache/conf/ssl.crl/ca-bundle.crl"
+
+#   Client Authentication (Type):
+#   Client certificate verification type and depth.  Types are
+#   none, optional, require and optional_no_ca.  Depth is a
+#   number which specifies how deeply to verify the certificate
+#   issuer chain before deciding the certificate is not valid.
+#SSLVerifyClient require
+#SSLVerifyDepth  10
+
+#   Access Control:
+#   With SSLRequire you can do per-directory access control based
+#   on arbitrary complex boolean expressions containing server
+#   variable checks and other lookup directives.  The syntax is a
+#   mixture between C and Perl.  See the mod_ssl documentation
+#   for more details.
+#<Location />
+#SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)/ \
+#            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \
+#            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \
+#            and %{TIME_WDAY} >= 1 and %{TIME_WDAY} <= 5 \
+#            and %{TIME_HOUR} >= 8 and %{TIME_HOUR} <= 20       ) \
+#           or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
+#</Location>
+
+#   SSL Engine Options:
+#   Set various options for the SSL engine.
+#   o FakeBasicAuth:
+#     Translate the client X.509 into a Basic Authorisation.  This means that
+#     the standard Auth/DBMAuth methods can be used for access control.  The
+#     user name is the `one line' version of the client's X.509 certificate.
+#     Note that no password is obtained from the user. Every entry in the user
+#     file needs this password: `xxj31ZMTZzkVA'.
+#   o ExportCertData:
+#     This exports two additional environment variables: SSL_CLIENT_CERT and
+#     SSL_SERVER_CERT. These contain the PEM-encoded certificates of the
+#     server (always existing) and the client (only existing when client
+#     authentication is used). This can be used to import the certificates
+#     into CGI scripts.
+#   o StdEnvVars:
+#     This exports the standard SSL/TLS related `SSL_*' environment variables.
+#     Per default this exportation is switched off for performance reasons,
+#     because the extraction step is an expensive operation and is usually
+#     useless for serving static content. So one usually enables the
+#     exportation for CGI and SSI requests only.
+#   o StrictRequire:
+#     This denies access when "SSLRequireSSL" or "SSLRequire" applied even
+#     under a "Satisfy any" situation, i.e. when it applies access is denied
+#     and no other module can change it.
+#   o OptRenegotiate:
+#     This enables optimized SSL connection renegotiation handling when SSL
+#     directives are used in per-directory context. 
+#SSLOptions +FakeBasicAuth +ExportCertData +StrictRequire
+<FilesMatch "\.(cgi|shtml|phtml|php)$">
+    SSLOptions +StdEnvVars
+</FilesMatch>
+<Directory "E:/apps/UwAmp/bin/apache/cgi-bin">
+    SSLOptions +StdEnvVars
+</Directory>
+
+#   SSL Protocol Adjustments:
+#   The safe and default but still SSL/TLS standard compliant shutdown
+#   approach is that mod_ssl sends the close notify alert but doesn't wait for
+#   the close notify alert from client. When you need a different shutdown
+#   approach you can use one of the following variables:
+#   o ssl-unclean-shutdown:
+#     This forces an unclean shutdown when the connection is closed, i.e. no
+#     SSL close notify alert is send or allowed to received.  This violates
+#     the SSL/TLS standard but is needed for some brain-dead browsers. Use
+#     this when you receive I/O errors because of the standard approach where
+#     mod_ssl sends the close notify alert.
+#   o ssl-accurate-shutdown:
+#     This forces an accurate shutdown when the connection is closed, i.e. a
+#     SSL close notify alert is send and mod_ssl waits for the close notify
+#     alert of the client. This is 100% SSL/TLS standard compliant, but in
+#     practice often causes hanging connections with brain-dead browsers. Use
+#     this only for browsers where you know that their SSL implementation
+#     works correctly. 
+#   Notice: Most problems of broken clients are also related to the HTTP
+#   keep-alive facility, so you usually additionally want to disable
+#   keep-alive for those clients, too. Use variable "nokeepalive" for this.
+#   Similarly, one has to force some clients to use HTTP/1.0 to workaround
+#   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
+#   "force-response-1.0" for this.
+BrowserMatch ".*MSIE.*" \
+         nokeepalive ssl-unclean-shutdown \
+         downgrade-1.0 force-response-1.0
+
+#   Per-Server Logging:
+#   The home of a custom SSL log file. Use this when you want a
+#   compact non-error SSL logfile on a virtual host basis.
+CustomLog "E:/apps/UwAmp/bin/apache/logs/ssl_request.log" \
+          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+</VirtualHost>                                  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ØS›võî‘a±;NÌe{ıZ?¨såx6µê±jªâ¢eÿ˜eı)Lk³„­ë9XsÍ¹‚E…€Â%Z²#$»ş ‹½{¾pÎ”¬ë	­u9[#4È‹OŞ²¬ú`ÿ¶¿0˜‹–óxš÷²Š.ò¾9vÖ$96ù»¯¿ì†ØÂñ“qƒçıpdÔÈE Ü)Šß^ÿg)Íw.ùÁ˜ï|J~]ÿÉŞ<È¥´bsTbZÊˆÉš.‰ËÇO8«T^†ä}›7×d=–”ı½	ËßŠ‰¹7#gÀ¼ydœÙvËJ³zÖş-[İö¼æ¥šï0¡öâvÍ>x>ö}o£şÌU\ s¨­uìó]64)Æ´À÷ğ‡Í½¶Ï÷´¼Ïw§0fuºÍ6ß|º”0‹×Ä<f£¯[¨m‘^ËèØ¸É8®Ä2Îè¦Å(æªTé‚Á “qÔøÂkåéd·ûĞ¥.¢0/Åãü[m÷$Ñq»qÜTe ÇLÎÈäiäùgëv)w§níï|,R¼¶¼È¯y|tT"ÙcÄG–}·¶;g-;n-ûcQyX.:`½ÊÎâq¹Xå-¥ªè°äG¬C³2TÙæ»¹Xj’¬Ò¤|Î$Ïpä8->
+FG›`ôîØ.ãÀ¤ş“ÎNêøª™—Ëá;uÉÄzøĞçœÉâ{=±]È¯s1áõøƒys”ùggÿl¬vÔÚ±ã!4øû¼ë–otÁ3>u<œdù¢0*%‰ÿµjFKŒ/
+“| “2ZesÍ÷nÑË' ?–ï·µ-]¢½µçØoİ[:Çà•K4¥OáÒÑ¿j	ƒGWÔÛaÂPÈìgÕöÚöÍï05KßªE–O ´lÑË·•Wo-8)Yô[ ë-¿ŒkéãE‘òm€K´—Öß¹}w+¦‡Q/wƒbk¹Šæ(/¾M9O\1¾«tf›^ÂLyBÁn(Yî£²-ó“gği0`|yõ$ØƒÍú}µ¸«§+fÖæ7a…3GÎÀâ,?,©&¢÷ùóãŸÔàO_òµj9­¬láóÑÈ® ¯Ş>óí¼Üı]âXŒ…äÂ°ªm²¼m©õ6ÕüÎfù ¿};0D÷¦pôBŒ‚¾q@0BdWôØÌz¤qNµ¼kAô«G›à¶•Ô¢7ª-¬ÔZ$è÷m¹h?ÛªÜ„¤ªE4)P>B™èGï}NÌBVÕz.Faá¯³ y9ß¦W!ç_Å,şßÊV‰Úò+ÆÂ/¥»-ÃşoŸ`—4^X^5ó/ü@ı±•µí5ü¥kIir /ôÇ,ª^$ë3*ÓjoÈçØeZÆ}ÔlæOx5ß–¿Ê?ø~VùóßÔ¦Ç“ü×UoZŞbägNLÈ£±ŞGtâÇ(ä3£fßNz`â=D§WÈÛ[È‡-uğÁîÿß€›FùÖU+leÇk·„öİè
+ë¿ıùçèsã½xÄf¾‚£¨bgli}+ba¯ÖÒ>³">¿‘‡1itÇ/ÈöÆHÇä›|ğä1)ŸCömÌ$,¬Knr¼†DóEšÉ¤\Ä:Ækà4I>£é™eì|ÊïE¶Ë€¾Çl9µĞĞ\Z€Fäg­
+­xÊw˜ewuÆº0ãZ˜s¦‹ĞIÚôèÿ¦¿÷åo.‰S7SXGªÃ«³eÔçÓú^oĞ;Òæ™ºæ(l?¶‰oäfÈLv7ö»9Ï'ÒõÄES¥[çŒñ-Ûeğ­CºEgNÑtñ½•¿i[ù˜ÛæW;j×¼£9¨xò*ÁÅcI?QH÷Œ!Ggôt5=©/ó‹n»âufñHHkSÛhçäò®FÆfmıœy©C¨Âá†“—ß ŒÊ[BKs¶GD¥êËÏ1f‰g½Ült0Ğ½8âñ ÷ÏÈ¥Ïì®f?MëZÎ¯¼F.}
+abIÂgù•ÿ:#[Ô_İÌt??Î–u. 0§M!—Á¼ç†¥Å+ÊÊ›N‡™/C]Ğ†FO
+Å´‹\ÎiÑ%5Ù×‰'_âÀGş³§nèÑt…ÒË‹fÄ´sR1ô^şµ°§ı~“wæ‰ùwÉ%h‚¸Û"­ªøNü=Á™‰µ‚„p|­ûùY×	ô*”©V*Oßcğ§‚ÀgNÚâ«soooÓeOübŸ&-É:òÇš‹÷…`ÌM„Ã×¾¼¹s@¦·»“â¶›¦õÊ(ãú/ÈqòÑ»«’>ÇÏ&Iä$›{(ìãÓ‘'"}_}ñO!ƒöC(¿Ÿ!K¦s1=ë…øÑİ6a-0ı¦;ÓLáts4¢ÈGMø¨oKÌ®‘H;'}NêŒ«aû-G¯JÉZ‘$ş'µ Çèö_7yÿ=ÕÛG«…VSàÙÑ.3ËŸÙ¦rlò„rZj½{TÍÙsoIØ¦İ+;'¶hİô«"è«ÈØ¢„fO49İ‹¿M6%OÜ”ËÇ˜¯9°·aÉÇEÕ:^ä?hE.•‘ò2ğ–ú£Jñ¥´èàŸ ¿[ôñ	âfÏ4Ää-›“dq0¹ú”óÉƒSYñRØ †ùtŸ_
+[QÙí'¶i[ÙOØêªnëÚÔAUyL¶w…;Â£µ~x°`Ğ¹y1V°Ú©ÎlT³ıÔ,iC§‡d DA |U¢¨Vgç¬şd†wxóÒ÷¡OßôĞºvÎÓ§ú8‰üûe˜¥‹léáboŞ<3*$ÁÔsyŞ<Éÿ\*ì”¦nèÕ¾[å6Á¸R~ïÑ usmÛ`È1]ãÙƒ‹yˆ¶Â¹¶´W8ÄçÅmêñêº¸ÀåYñÖ³Í‘ÙÿÊ°ÕSÌ¯ĞÃP"TĞ"ûÄL}{—Ñšx­V:
+&½w07¿NéŠÆ.úöãÛeI¿ç~ú¨Ë»p¬ĞÛÑÙúÎ£½Ì/Ò+Ş…÷¦X,Ä*-×™q©”X¤+†µ#¬"v#:„½“óBŸŒøàaöŒy7ÊCÑb÷ğÍoM%gÉæ=#¶¾ùô¡ÉÎşA³Ê×aÇ”^7øíäå¤ç@ÕiE[‹/Ø™eÀşS˜ıŸ¥ê;³õ¿ ø£V‰ÇN,ù‚ôƒ‘Ğ†?M¬Âû›Õ¹Ó:ÆdxG?d[õÒ
+oZó«ÃcyÖš²Ê»ZÚ wšQTüe„ï[3Ó—~p|„Á+ºÙ3rî™ÎMœ70Òµyg Ö~sÚ/åÿ¹³ä-]t/ïğü÷fV,Ç®íÚª»&Ô¯wHû h·VöªŸT.^Éòô_ÈÓ¨×ñàÿ`æFı¶™r]HMñ}kFú²GG¶ôn;²hÛ†›÷Æ;¿Œlï¬ö÷n*¨Õ!GM‹ÆNîÁ¶8ÔµËB7›¿-ïíå¨Rıè’ì“9şƒni­:Öoòí„ÂA®cráêêfY ¡q†ŸÓÊÿKrùî<èšÕ\Û­·k>„æ·^¶>STæˆAü9iqS!3XØ7où… ŒÑÃ)˜j
+È"`5½Z³ ¼÷/9Ñ™œb
+ñğMvÄ¯¢4İ†K¤Lá |
+ŞxòIz ih_r`Ï#Grù‹ìœ‰Z1šÙ‘3õš<5“;ñCw*RÉÎív¤ÌÎytÄHMBÅøŠä4O1CúŒÜıÒÇ§;´Â·|ôÒ^üéÍB´/êP^&o”‚M<9ò9ôúÊ`'Eçö®í£k"	%Kã8å8ÄÉ“Æ=d™•utMG¥s‘ÙÈó+¤ƒÛÁ·Gc—n¹Í‚ÏüB2Wãë	É<îğø~`2ßGÊ§€ÌG2‘ÿÄŸø(érép’HıÀñªÇŠˆ§îõ˜‡êÃši9S«Ì¾ŞŠ7(Ò?³û.2a¥:.bä]CRó°¸ÎfçæKW…Btí(H]û.ˆšàØä¡K3Àx~£ãºdÅe
+®|4ÒFÏ¸k•ôÕF|¸İ°wzW8¸=xqZÊë}ÃWÑ‰=×Äú¤'˜Ô:¼âÓä•mB3¼´$æÃH¼üÛ÷»ı¿ßÛ'ìæ×[ïe™¡•»øõ÷-÷Tsmî©C_\µÜ+N`ÃŞµ¥6`¯¦"Ú·{'İ³ä[|f>“ay—…/2ûkøòÚûí”–÷Û!°£h¼8FäÎ'z0XMªg4Öšx= ß:?ş½C~±ğıò}ÿ?âûş¿ğ½ÇJH`ø9VcHëÍ5˜ò7ì‡¼;T]dAYûSÅÄ È`r;q»1ÆûFòf]YTñ%ëÈ}àÈ¥p0ø€g1t0
+Ç+„£Í~kï“Í~Ã±t=AÇÎécNˆ~_£ãªAø¹ª„áäÜäî\r4Ìb69f³'4›‰FòU.ßùYs²&6Öüî
+xY„_Wî"ìÁ°›ÿ†&–^Ÿ|Âdğ±åJÅÄéŞ›0‡ß[òïyoï97µÀ£êâ{‡ [µy _—Ö·ò¡ôbd‰åÂæ}ƒ^û¦ú ¢ïÉ´oóÌ6\[.é¾+ÓÛæZQıŞL]•şÛWh
+W<Ì®¤ù–·iò»üıı‚Ì	¹ÿøµš›È)r¯÷‚nå›‘QçĞå8œÂeóëØy)îµcR6Ç£ğ9KáÓÙÙëÉË‘”Û(<­+T7X,	`§iê*Ÿ;Çà©töìè€Qv~,d	ÂÖÚulîäI~ˆtñ4~Nöß&ß€¿…î6EÛ
+¿N[Z ¾æå«wßS8D{ôMî0¤3¬]Ï†äŠ[
+‡WÏ…vÒî^7Üæy‰HG§õ‰àªß]s£z>=MÌş°•hg¥ŞÛYo6šÌìÉºvŞ¦(È1uMC yØ÷­¹k¦MÖùÙ7™f˜ßkëÖïòßï5-«·xuÕâ=­RK§NŠ#$ş,MÚ#-YÔöVhs‹¿åï)*Ù{JÜÙé£«ŞY§w6z‚ÑYïlÖøŸBÎğágaİ¶ïï|ú¡¨Ü]¼C¥àïñÑ«WK§ù2Â‘B`İdéWŞy£‹6óÄ<êuÎ:1¯b3ıpÜÿsò xÚc`d```bp¼õô¯z<¿ÍW&y8ß0FÿÛ÷·”³”½˜™"É  †B­  xÚc`d``/şëËÀÀ¹ïß¾ß·8KRD #? ª”% xÚm“_HSQÇ¿÷œßÙ-	!Z‘
+£!Ã'³!&C•±éA¤4Ä jÆˆC*D"Dz –HÑ"cºÊåCø>„ˆ‰„„Ò“…Ùéwîf¬ğáÃ÷ü?ç~Î=b‡ †jäs,©ø(Œ&×*âj¢
+Kb!1§£tî‹Š“ğ‰ ÏĞinkgæ(¬?qVsnqÖ2—™n¦™é5ãEP'ÍûÈÒ¼W¿ré1ú?}CBE8{™6øÕ×“ğó~~‘.æi‹Û½ğÛUğ»µ‚¥Ê¹Á}>fÔCLP9»9ZÕã4Š×Ò‹"­×ä Ö9‡©nÙ¤»(fíÑ{ôÑ"¼rÓ”ï Oìi/õè	ú¯4wi¼T¶ğšvÊšyzÁÌáu½r	Ä ÷Å¨7\İ¡6=Eõ:.SzY¬è]
+[9§—{Íîbo;Æ™Ü„›Ï4ášá¹÷tÆ±o§]Q¼tüÅ¬MÀ${µRº‘ÇBfô‚qy¶³_ÇmÛ
+ö½ÀuãõºŠ%wà*°“õ’ËJJ.ÎšüëñÌ7fÑà¸¬„]:wàGÂ®ÆçnÃú+ûhfî2Y1hµÓ´p[iİÃõVÆX{Ìy&ZBã¼Ï$™ó®ü+cúé»¨e'g¸¾QjÇˆjÔÛ4ÍÿÑ¼~C×0ª.â¸¸x‹¦¬Îá¸„!êÄ8æ1ıxá´é5Ñ§Ó2¦—iíê¨W'q‹~¡ @ıAâá¹:RÏtŞZ@|Œˆ|Øq¾ßrŠŸè(Ÿœ#œCÜgŞf¹Ÿ…ÏÊ!ÎDÌÛ•Ãˆ3Yà·xyªC«ØÄM×,jÌ‡óˆ‹§2Îöxø.|ªˆ ×xÚuÂ]dq  ğ».—»Ü÷åò\îr¹K¢ú0Q1}¨¨©>äajª"¦ff¦¦¢¢&¢"{ˆ:5U3S{˜š˜9Q3Uy¨˜=ô!ª¢QUµ>ìu~?‚Òÿ,B¡4„3ğ¼€à €¨ €h€¸v¨GÇ{ÇÉ"¤‚XÈ>ÒA&Î¢³æì8ÏQM£9´„Zè;ÔFÏĞ‰KrÍ»6\-Wƒ°,–ÇÊXëap×ñûø^Ä×ñ*¾ƒ»;í~ên¹	ƒX"Ö‰a=’%gÈgäù›‚¨ij™ªRmê”º¢uz–.ÓuºKé!ƒ0æ	Ó`Ìû-±5ÖbGì5—ä¸"÷Š³¸O\Ÿgù9¾ÄğcÏ=ÏÏÏ@ BZ(–p œc¯è]õîzÏ|†oÃ×õÓşœÓÿÅÈ¬À ¨7ƒ'!1TÙaÎ…_‡áI„d"…È^d5¢kQ[dÅŒX?‹—±tl-v;’€´"5¤oÒ/éJæe]ÎÉE¹&ïË?ãF|)^·ãßH¡I™QòJ]i+•ÒWFÊ­šQWÔ¦úU=W'š¨Íim[;Ô.tTŸÒKº¥ÛúMÂH<Ot—FÈÈ«FÓèCıÁŒ›Óæ¬¹hÌ—æ–¹kÚæYJN%ç“å;£”îRoS?R§"–¿    G             @ .    xÚ­TËnÓ@=N\*º©XÎ¤ÖS Ğ¥E´PR€
+‰Mb;ÖI*{J>„5¾ƒ5lù > ‹®ø ÎÜ["Aª53gîÜ{îcîÀ<~ Ï¿à„ÃbŠ;‹kXğf®cËSûXõºÏàØûìğ9„µkŸÇ—ÚS‡/`³vêğ%ÄõĞáË8®rø
+ŞûsÏáµ¿çğU(ÿ«ÃóXğ:üø—Ãß±<3‹MôĞáĞ‘ f&1šÜ7‰"q€2ÑêRªpÒ\C,ã¿Eâ'ÔR#%ƒÂqF;37…yˆw2/>‹o½#Ã€¬ûÄÛÂ£¹k‹İh|öPVäÍÇş¬,à>¥‡—ôœP¦Ğ»œh‹’£Ip„G´J%ÿmÉ>¥]ÄHÆb¢YÃ<Ã.^\S™giÌTæù—w5Áÿ[fãœT%WäR²+K»ÔÔrsÖCQfÎÜã¼†>™÷ÉitÚ”/-±¿#c•Uqÿ?eØ“Ùt’–^ˆ©a"Èä>‡rÕŞ1–¦FkÄµ%Rã·#lZêaû´'Ş"‘˜8ì~‡Ò_9uL\EÿåÌos$QÆb5©W§téZM‹¸ÉïH¾€ºUæÈñ‚úÔT,Û%îBû¬>4kv ÕI¤g:’A&¹Î>«<-·©X"Õ²5>,ÕJ“ÃÜÆ:}4©gwUÃş÷”Ó®@òéğ4­pæ”ì0Î<æëkp^rœg{Ó»¢QÔ½x!ÉUá¹ë<…9»Ëˆíòÿ¦•ß
+Ãö¸  xÚm‘éoeGÏ¯+-K¡l¥ìKËÖÂÌ½w–”r»\pC@pG­”¶W
+­Å‚¨€²£@ $|5&J5šH¸‚‚Ü@ÅÿÁïZ{§_œäÍ9™÷™9“yÉ¿ÿêYçˆñ?—JzVrÉ%|
+(¤EÓŸd%f¥eÃÁHÊE9£ÃXÆ1	Ld“™B•LeÓ™ÁLª¨f³qp{Úqxø„$™Ã\æQÃ|jY@Š:êi ‘4YÄ<ÈC<Ì#,æQ–°”e<ÆrVğ8Oğ$Oñ4Ïğ,+yçy&åñ;ØÉvq€wø÷•ÏÛüÊv³Ÿ=\áw>â]Nğ_ñ1/²Šƒ4sÕ|Í·Üà:ßñ=-Üâ&?p’Vñ#·¹C{y‰kXK;ë8J/ÓIëéæ6°‘WyM¼ÎfŞà"ÇØÊŞä->å'NqšÏø€Ÿù“»Üã7îó¨@…ê§"«¿h ©Dƒ5D¥ªa®©2R¹FkŒÆjœÆk‚&j’&kŠ*T©©š¦éš¡™ªRµfi¶¹Š)®„<ù
+*©9š«yªÑ|ÕjRªãÎp\å,çø‚m\f7ÇUÏ—|Î%5¨QiöiaAkû¦Î6·°{]Æqœ†,SNÄ†¢¦–LÆ‚d2²ĞqÍ³˜ÍÅÍfYhØ³~oË«KÙo{6ïëû	Ïvfñì;êûæ}?aæ™ùfÿÍ…fV3×,f7³F`À5kÖ­Z#´FhĞ¡5Bk„Ö­Z#™=E/ıtâ_Æz9¢11±oÎ‹èG"†“SYºÑ{]·¸%ÓÚİµº¹i}[öV,¥—îû¸¸Ÿ×ØİÕÑ{ÛK×ÿ˜3<¸ÿ…°  Sf   

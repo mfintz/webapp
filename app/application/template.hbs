@@ -1,0 +1,72 @@
+<div class='wrap'>
+    
+    <header class='main-header'>
+      <div class='container'>
+        <div class='logo'>
+          <img src='img/logo.png' />
+        </div>
+
+        <div class='search'>
+          <div class='search-line'>
+            {{input placeholder='search' value=searchString}}
+            <button {{ action 'search' }}>Search</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    {{#if notification}}
+      <div class='notification container'>
+        {{ notification }}
+      </div>
+    {{/if}}
+  
+    <menu class='main-menu'>
+      <div class='container'>
+        {{#each dropdowns as |dropdown|}}
+          <div class='dropdown'>
+            <header class='dropdown-header'>
+              {{dropdown.header}}
+            </header>
+            <ul class='dropdown-actions'>
+              {{#each dropdown.options as |option|}}
+                <li><a href='{{option.link}}'>{{option.name}}</a></li>
+              {{/each}}
+            </ul>
+          </div>
+        {{/each}}
+      </div>
+    </menu>
+    
+    <main class='tabs'>
+      <nav class='main-nav'>
+        <ul class='container'>
+          {{#link-to "quickReports" tagName="li" classNames='tab-link'}}
+            <a href="{{view.href}}">Quick Reports</a>
+          {{/link-to}}
+          {{#link-to "myFolders" tagName="li" classNames='tab-link'}}
+            <a href="{{view.href}}">My Folders</a>
+          {{/link-to}}
+          {{#link-to "myTeamFolders" tagName="li" classNames='tab-link'}}
+            <a href="{{view.href}}">My Team Folders</a>
+          {{/link-to}}
+          {{#link-to "publicFolders" tagName="li" classNames='tab-link'}}
+            <a href="{{view.href}}">Public Folders</a>
+          {{/link-to}}
+        </ul>
+      </nav>
+
+      <div class='tab'>
+        <div class='container'>
+          {{outlet}}
+        </div>
+      </div>
+    </main>
+    
+    <footer class='main-footer'>
+      <div class='container'>
+        <p>&copy; Matan Fintz</p>
+      </div>
+    </footer>
+
+</div>
