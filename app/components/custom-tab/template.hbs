@@ -1,0 +1,40 @@
+<main>
+  <manu class='tab-menu'>
+    <select {{action 'changeIframe' on='change'}}>
+      {{#each urlSelect as |url|}}
+        <option value="{{url.url}}" selected={{is-equal url.url iframeSrc}}>
+          {{url.name}}
+        </option>
+      {{/each}}
+    </select>
+    
+    <a class='iframe-option' href='{{iframeSrc}}' target='_blank'>{{fa-icon "arrow-right"}}</a>
+    <a class='iframe-option' {{action 'toggleMenu'}}>{{fa-icon "cog"}}</a>
+  </manu>
+
+  <div class='inputsMenu {{if showInputs "active"}}'>
+    <div class='reports'>
+      <div class='report {{if inputErrors0 "invalid"}}'>
+        {{ input placeholder='Site name' value=name0 }}
+        {{ input placeholder='Site url' value=url0 }}
+      </div>
+      <div class='report {{if inputErrors1 "invalid"}}'>
+        {{ input placeholder='Site name' value=name1 }}
+        {{ input placeholder='Site url' value=url1 }}
+      </div>
+      <div class='report {{if inputErrors2 "invalid"}}'>
+        {{ input placeholder='Site name' value=name2 }}
+        {{ input placeholder='Site url' value=url2 }}
+      </div>
+    </div>
+
+    <div class='buttons'>
+      <button {{ action 'saveReports' }}>SAVE</button>
+      <button {{ action 'toggleMenu' }}>CANCEL</button>
+    </div>
+  </div>
+
+  
+  
+  <iframe src='{{if iframeSrc iframeSrc}}' />
+</main>

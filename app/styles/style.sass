@@ -1,0 +1,221 @@
+@import "susy"
+@import "compass"
+
++global-reset
+
+$lightGreen: #b5f7e6
+$darkGreen: #266352
+$text: #404040
+
+=fintzInput
+  padding: 8px 16px
+  +border-radius(5px)
+  outline: none
+  border: solid 1px $darkGreen
+  color: $darkGreen
+  background: $lightGreen
+
+=fintzbutton
+  +fintzInput
+  cursor: pointer
+  +single-transition(background-color, 100ms, ease-in-out)
+  will-change: background-color, border-color, color
+  &:hover
+    background: $darkGreen
+    color: $lightGreen
+    border: solid 1px $lightGreen
+  
+
+html
+  background: $lightGreen
+
+.wrap
+  padding-bottom: 40px
+  
+.container
+  +container(1200px)
+  font-family: "Open Sans Hebrew", sans-serif
+  
+.main-header
+  width: 100%
+  height: 65px
+  background: #fff
+  margin-bottom: 20px
+  
+.logo
+  +span(1 of 2)
+  img
+    max-height: 100%
+
+.search
+  +span(1 of 2 at 2)
+  text-align: right
+  padding-top: 20px
+
+.search-line
+  input
+    +fintzInput
+    margin-right: 5px
+  button
+    +fintzbutton
+    +single-transition(all, 300ms, ease-in-out)
+    font-weight: bold
+    will-change: background-color, color
+    &:hover
+      background: $darkGreen
+      color: $lightGreen
+    
+.notification
+  background: $darkGreen
+  color: $lightGreen
+  padding: 20px
+  +box-sizing(border-box)
+  +border-radius(8px)
+  
+.tab
+  .container
+    background: $darkGreen
+    padding: 15px 15px 15px 15px
+    +box-sizing(border-box)
+    position: relative
+    margin-bottom: 40px
+  button
+    +fintzbutton
+    position: relative
+    top: 101px
+    right: 187px
+
+.inputsMenu
+  width: 98%
+  +container(98%)
+  max-height: 0
+  background: $darkGreen
+  position: absolute
+  top: 10px
+  overflow: hidden
+  +single-transition(max-height, 300ms, ease-in-out)
+  will-change: max-height, height
+  &.active
+    max-height: 300px
+
+.tab-menu
+  select
+    +fintzInput
+    width: 15em
+
+.reports
+  +span(1 of 2)
+    
+.buttons
+  +span(1 of 2 at 2)
+
+.report
+  input
+    +fintzInput
+    margin: 7px 10px
+  &.invalid
+    input
+      background: #ffebeb
+  
+
+.main-nav
+  width: 100%
+
+.tab-link
+  +span(1 of 4)
+  text-align: center
+  padding: 1em 0
+  background: $darkGreen
+  position: relative
+  +border-radius(8px)
+  +box-sizing(border-box)
+  +single-transition(all, 100ms, ease-in-out)
+  top: -2px
+  will-change: top, border-radius, color
+
+  a
+    text-decoration: none
+    color: $lightGreen
+    font-weight: bold
+
+  &:nth-of-type(4n)
+    +span(1 of 4 at 4)
+      
+  &.active, &:hover
+    top: 0
+    +border-top-radius(15px)
+    +border-bottom-radius(0)
+    a
+      color: #fff
+    
+.dropdown
+  +span(1 of 3)
+  background: $text
+  color: $lightGreen
+  position: relative
+  text-align: center
+  padding: 15px 0
+  margin-bottom: 30px
+  +border-radius(8px)
+  margin-top: 25px
+  margin-bottom: 90px
+
+  &:hover
+    .dropdown-actions
+      max-height: 500px
+
+  &:nth-of-type(3n)
+    +span(1 of 3 at 3)
+      
+.dropdown-actions
+  position: absolute
+  z-index: 1000
+  background: tint($text, 20%)
+  width: 100%
+  top: 40px
+  max-height: 0
+  overflow: hidden
+  +border-bottom-radius(8px)
+  +single-transition(max-height, 300ms, ease-in-out)
+  will-change: max-height, background-color
+  padding: 10px 0
+  a
+    text-decoration: none
+    color: white
+    +single-transition(color, 300ms, ease-in-out)
+    will-change: color, font-weight
+    &:hover
+      font-weight: bold
+      color: $lightGreen
+  li
+    padding: 10px 0
+
+      
+iframe
+  width: 100%
+  height: 500px
+  
+.iframe-option
+  float: right
+  text-decoration: none
+  position: relative
+  z-index: 10
+  font-size: 3em
+  color: $lightGreen
+  cursor: pointer
+  padding: 10px 0 10px 15px
+  +single-transition(color, 300ms, ease-in-out)
+  will-change: color
+  &:hover
+    color: #fff
+  
+.main-footer
+  width: 100%
+  height: 40px
+  line-height: 40px
+  text-align: center
+  position: fixed
+  bottom: 0
+  background: white
+  color: $darkGreen
+  font-weight: bold
